@@ -4,23 +4,23 @@ let link = 'https://www.obozrevatel.com/ukr/politics/'
 
 const test_parser = async click => {
     try {
-        let browser = await puppeteer.launch({ headless: true, slowMo: 100, devtools: true });
+        let browser = await puppeteer.launch({ headless: true, slowMo: 1, devtools: true });
         let page = await browser.newPage();
         await page.setViewport({ width: 1400, height: 900 });
         await page.goto(link, { waitUntil: 'domcontentloaded' });
 
-        // for (let i = 0; i < click; i++) {
-        //     const button = await class$('button.showMoreRelated_btn.ComponentManager_didInit');
-        //     await button.click();
-        //     await article.waitForSelector('newsImgRowTime');
-        // }
+        for (let test_parser = 0; test_parser < click; test_parser++) {
+            const button = await page.$('div.showMoreRelated');
+            await button.click('button.showMoreRelated_btn.ComponentManager_didInit');
+            await page.waitForSelector('article.newsImgRowTime');
+        }
 
         let html = await page.evaluate(async () => {
             let res = []
             let container = document.querySelectorAll('article.newsImgRowTime');
             // console.log(container); 'При використанні page.evaluate, тоді console.log виводиться в консолі бравзера'
             container.forEach(item => {
-                let title = item.querySelector('h3.newsImgRowTime_title').innerText
+                let title = item.querySelector('h3.newsImgRowTime_title').innerText 
                 let link = item.querySelector('a.newsImgRowTime_titleLink').href
 
                 res.push({
@@ -40,7 +40,7 @@ const test_parser = async click => {
             let article = await page.evaluate(async () => {
                 let article = null
                 try {
-                    article = document.querySelector('div.newsFull_text').innerText
+                    article = document.querySelector('div.newsFull_text').innerText.replace("\n", "\"", "");
                 } catch(err) {
                     article = null
                 }
@@ -60,10 +60,11 @@ const test_parser = async click => {
         })
 
     } catch (e) {
-        // await browser.close();
+        await browser.close();
         console.log(e);
     }
 
 }
 
 test_parser(0);
+
